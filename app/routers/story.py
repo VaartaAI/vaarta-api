@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 
+from app.auth import require_api_key
 from app.db import Database
 from app.dependencies import get_db
 from app.repositories.story import StoryRepository
@@ -12,6 +13,7 @@ router = APIRouter()
 def get_story(
     cluster_id: int,
     db: Database = Depends(get_db),
+    _: str = Depends(require_api_key),
 ):
     repo = StoryRepository(db)
     story = repo.get_story(cluster_id)

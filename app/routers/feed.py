@@ -2,6 +2,7 @@ from typing import List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 
+from app.auth import require_api_key
 from app.db import Database
 from app.dependencies import get_db
 from app.repositories.feed import FeedRepository
@@ -21,6 +22,7 @@ def get_feed(
     page: int = Query(1, ge=1),
     page_size: int = Query(20, ge=1, le=100),
     db: Database = Depends(get_db),
+    _: str = Depends(require_api_key),
 ):
     if category and category not in VALID_CATEGORIES:
         raise HTTPException(status_code=400, detail="Invalid category")

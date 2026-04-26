@@ -3,6 +3,7 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     database_url: str
+    api_key: str = ""          # Set this in production to restrict access
     app_title: str = "VaartaAI API"
     app_version: str = "1.0.0"
     db_pool_min: int = 1
