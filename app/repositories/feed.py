@@ -6,7 +6,8 @@ from app.schemas.feed import FeedItem
 _FEED_SQL = """
     SELECT s.id, s.cluster_id, s.summary_text, s.category, s.created_at,
         (SELECT a.title FROM articles a WHERE a.cluster_id = s.cluster_id ORDER BY a.published_at DESC LIMIT 1) AS headline,
-        (SELECT COUNT(*) FROM articles a WHERE a.cluster_id = s.cluster_id) AS source_count
+        (SELECT COUNT(*) FROM articles a WHERE a.cluster_id = s.cluster_id) AS source_count,
+        (SELECT a.image_url FROM articles a WHERE a.cluster_id = s.cluster_id AND a.image_url IS NOT NULL ORDER BY a.published_at DESC LIMIT 1) AS image_url
     FROM summaries s WHERE s.is_safe = true {category_filter}
     ORDER BY s.created_at DESC LIMIT %s OFFSET %s
 """
@@ -45,6 +46,7 @@ class FeedRepository:
                 category=r["category"],
                 source_count=int(r["source_count"]),
                 created_at=r["created_at"].isoformat(),
+                image_url=r.get("image_url"),
             )
             for r in rows
         ]

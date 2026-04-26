@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pydantic import BaseModel
 
 
@@ -9,3 +11,4 @@ class FeedItem(BaseModel):
     category: str
     source_count: int
     created_at: str
+    image_url: Optional[str] = None

@@ -21,3 +21,4 @@ class StoryDetail(BaseModel):
     sources_agree: bool
     created_at: str
     sources: List[SourceOut]
+    image_url: Optional[str] = None

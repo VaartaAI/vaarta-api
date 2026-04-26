@@ -9,7 +9,8 @@ from app.schemas.story import SourceOut, StoryDetail
 _STORY_SQL = """
     SELECT s.id, s.cluster_id, s.summary_text, s.why_it_matters, s.deep_explainer,
         s.category, s.entities, s.topics, s.sources_agree, s.created_at,
-        (SELECT a.title FROM articles a WHERE a.cluster_id = s.cluster_id ORDER BY a.published_at DESC LIMIT 1) AS headline
+        (SELECT a.title FROM articles a WHERE a.cluster_id = s.cluster_id ORDER BY a.published_at DESC LIMIT 1) AS headline,
+        (SELECT a.image_url FROM articles a WHERE a.cluster_id = s.cluster_id AND a.image_url IS NOT NULL ORDER BY a.published_at DESC LIMIT 1) AS image_url
     FROM summaries s WHERE s.cluster_id = %s AND s.is_safe = true
 """
 
@@ -61,4 +62,5 @@ class StoryRepository:
             sources_agree=row["sources_agree"],
             created_at=row["created_at"].isoformat(),
             sources=sources,
+            image_url=row.get("image_url"),
         )
