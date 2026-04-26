@@ -13,13 +13,9 @@ from fastapi.exceptions import HTTPException
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Eagerly initialise the connection pool on startup.
-    settings = get_settings()
-    _get_db(settings)
+    _get_db()       # warm up connection pool on startup
     yield
-    # Gracefully close the pool on shutdown.
-    db: Database = _get_db(settings)
-    db.close()
+    _get_db().close()   # gracefully close on shutdown
 
 
 def create_app() -> FastAPI:
