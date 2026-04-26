@@ -28,3 +28,15 @@ def get_feed(
         raise HTTPException(status_code=400, detail="Invalid category")
     repo = FeedRepository(db)
     return repo.get_feed(category=category, page=page, page_size=page_size)
+
+
+@router.get("/search", response_model=List[FeedItem])
+def search_feed(
+    q: str = Query(..., min_length=2),
+    page: int = Query(1, ge=1),
+    page_size: int = Query(20, ge=1, le=100),
+    db: Database = Depends(get_db),
+    _: str = Depends(require_api_key),
+):
+    repo = FeedRepository(db)
+    return repo.search(query=q, page=page, page_size=page_size)
