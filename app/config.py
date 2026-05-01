@@ -15,6 +15,10 @@ class Settings(BaseSettings):
     jwt_expires_days: int = 30
     google_web_client_id: str           # OAuth web client ID for ID token verification
 
+    # ── Cache ──────────────────────────────────────────────────────
+    redis_url: str = ""                 # leave empty to disable caching
+    feed_cache_ttl_seconds: int = 60
+
     model_config = {"env_file": ".env", "env_file_encoding": "utf-8", "extra": "ignore"}
 
 

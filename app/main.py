@@ -7,7 +7,7 @@ from app.config import get_settings
 from app.db import Database
 from app.dependencies import _get_db
 from app.exceptions import http_exception_handler, unhandled_exception_handler
-from app.routers import feed, story, categories, auth
+from app.routers import feed, story, categories, auth, preferences, bookmarks
 from fastapi.exceptions import HTTPException
 
 
@@ -41,6 +41,8 @@ def create_app() -> FastAPI:
     app.include_router(story.router)
     app.include_router(categories.router)
     app.include_router(auth.router)
+    app.include_router(preferences.router)
+    app.include_router(bookmarks.router)
 
     @app.get("/health")
     def health():

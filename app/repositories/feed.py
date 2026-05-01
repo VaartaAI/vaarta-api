@@ -41,11 +41,20 @@ class FeedRepository:
         category: Optional[str],
         page: int,
         page_size: int,
+        preferred_categories: Optional[List[str]] = None,
     ) -> List[FeedItem]:
         offset = (page - 1) * page_size
         if category:
             sql = _BASE_SELECT + "AND s.category = %s ORDER BY s.created_at DESC LIMIT %s OFFSET %s"
             params = (category, page_size, offset)
+        elif preferred_categories:
+            placeholders = ",".join(["%s"] * len(preferred_categories))
+            sql = (
+                _BASE_SELECT
+                + f"AND s.category IN ({placeholders}) "
+                + "ORDER BY s.created_at DESC LIMIT %s OFFSET %s"
+            )
+            params = (*preferred_categories, page_size, offset)
         else:
             sql = _BASE_SELECT + "ORDER BY s.created_at DESC LIMIT %s OFFSET %s"
             params = (page_size, offset)
