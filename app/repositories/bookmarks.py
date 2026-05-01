@@ -41,7 +41,7 @@ class BookmarksRepository:
     def list_items(self, user_id: int, page: int, page_size: int) -> List[FeedItem]:
         offset = (page - 1) * page_size
         sql = """
-            SELECT s.id, s.cluster_id, s.summary_text, s.category, s.created_at,
+            SELECT s.id, s.cluster_id, s.summary_text, s.why_it_matters, s.category, s.created_at,
                 (SELECT a.title    FROM articles a WHERE a.cluster_id = s.cluster_id ORDER BY a.published_at DESC LIMIT 1) AS headline,
                 (SELECT COUNT(*)   FROM articles a WHERE a.cluster_id = s.cluster_id) AS source_count,
                 (SELECT a.image_url FROM articles a WHERE a.cluster_id = s.cluster_id AND a.image_url IS NOT NULL ORDER BY a.published_at DESC LIMIT 1) AS image_url
