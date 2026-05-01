@@ -29,19 +29,26 @@ def _get_client() -> Optional["redis.Redis"]:
     _initialized = True
 
     if not _redis_available:
+        log.warning("redis library not installed")
         return None
 
     settings = get_settings()
     url = settings.redis_url
     if not url:
+        log.warning("REDIS_URL not set — caching disabled")
         return None
 
+    # log URL prefix only (never the password)
+    scheme = url.split("://", 1)[0] if "://" in url else "?"
+    host_part = url.rsplit("@", 1)[-1] if "@" in url else "?"
+    log.warning("redis: attempting connect scheme=%s host=%s", scheme, host_part)
+
     try:
-        _client = redis.from_url(url, decode_responses=True, socket_timeout=2)
+        _client = redis.from_url(url, decode_responses=True, socket_timeout=3)
         _client.ping()
-        log.info("redis cache connected")
+        log.warning("redis: cache connected ✓")
     except Exception as e:
-        log.warning("redis unavailable, caching disabled: %s", e)
+        log.warning("redis unavailable, caching disabled: %r", e)
         _client = None
     return _client
 
